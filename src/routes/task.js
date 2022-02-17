@@ -1,10 +1,14 @@
 const express = require('express');
 const Task = require('../models/task');
+const auth = require('../middleware/auth');
 const router = new express.Router();
 
-router.post('/tasks', async (request, response) => {
+router.post('/tasks', auth, async (request, response) => {
     try {
-        const task = new Task(request.body);
+        const task = new Task({
+            ...request.body,
+            owner: request.user._id
+        });
         await task.save();
         response.status(201).send(task);
     } catch (error) {
@@ -48,10 +52,9 @@ router.patch('/tasks/:id', async (request, response) => {
     }
 
     try {
-        const task = await Task.findByIdAndUpdate(_id, data, {
-            new: true,
-            runValidators: true
-        });
+        const task = await Task.findById(_id);
+        updates.forEach((update) => (task[update] = data[update]));
+        await task.save();
 
         if (!task) {
             return response.status(404).send();

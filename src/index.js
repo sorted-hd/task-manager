@@ -4,6 +4,7 @@ const userRouter = require('./routes/user');
 const taskRouter = require('./routes/task');
 
 const app = express();
+
 app.use(express.json());
 app.use(userRouter);
 app.use(taskRouter);
@@ -11,5 +12,5 @@ app.use(taskRouter);
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
-    console.log(`Server is up on post ${port}`);
+    console.log(`Server is up on port ${port}`);
 });
