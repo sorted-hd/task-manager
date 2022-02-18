@@ -16,19 +16,20 @@ router.post('/tasks', auth, async (request, response) => {
     }
 });
 
-router.get('/tasks', async (request, response) => {
+router.get('/tasks', auth, async (request, response) => {
     try {
-        const task = await Task.find({});
-        response.send(task);
+        // const task = await Task.find({ owner: request.user._id });
+        await request.user.populate('tasks');
+        response.send(request.user.tasks);
     } catch (error) {
         response.status(500).send(error);
     }
 });
 
-router.get('/tasks/:id', async (request, response) => {
+router.get('/tasks/:id', auth, async (request, response) => {
     const _id = request.params.id;
     try {
-        const task = await Task.findById(_id);
+        const task = await Task.findOne({ _id, owner: request.user._id });
         if (!task) {
             return response.status(404).send();
         }
@@ -38,7 +39,7 @@ router.get('/tasks/:id', async (request, response) => {
     }
 });
 
-router.patch('/tasks/:id', async (request, response) => {
+router.patch('/tasks/:id', auth, async (request, response) => {
     const data = request.body;
     const _id = request.params.id;
 
@@ -52,13 +53,13 @@ router.patch('/tasks/:id', async (request, response) => {
     }
 
     try {
-        const task = await Task.findById(_id);
-        updates.forEach((update) => (task[update] = data[update]));
-        await task.save();
-
+        const task = await Task.findOne({ _id, owner: request.user._id });
         if (!task) {
             return response.status(404).send();
         }
+
+        updates.forEach((update) => (task[update] = data[update]));
+        await task.save();
 
         response.send(task);
     } catch (error) {
@@ -66,10 +67,13 @@ router.patch('/tasks/:id', async (request, response) => {
     }
 });
 
-router.delete('/tasks/:id', async (request, response) => {
+router.delete('/tasks/:id', auth, async (request, response) => {
     const _id = request.params.id;
     try {
-        const task = await Task.findByIdAndDelete(_id);
+        const task = await Task.findOneAndDelete({
+            _id,
+            owner: request.user._id
+        });
         if (!task) {
             return response.status(404).send();
         }
