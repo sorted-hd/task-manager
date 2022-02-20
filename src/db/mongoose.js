@@ -1,9 +1,6 @@
 const mongoose = require('mongoose');
-const { createIndexes } = require('../models/user');
+const { CONNECTION_URL, DATABASE_NAME } = require('../config/config');
 
-const connectionURL = 'mongodb://127.0.0.1:27017';
-const databaseName = 'task-manager-api';
-
-mongoose.connect(`${connectionURL}/${databaseName}`, {
+mongoose.connect(`${CONNECTION_URL}/${DATABASE_NAME}`, {
     useNewUrlParser: true
 });

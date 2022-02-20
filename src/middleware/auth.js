@@ -1,11 +1,11 @@
-const res = require('express/lib/response');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const { TOKEN } = require('../config/config');
 
 const auth = async (request, response, next) => {
     try {
         const token = request.header('Authorization').replace('Bearer ', '');
-        const decoded = jwt.verify(token, 'thisismynodeproject');
+        const decoded = jwt.verify(token, TOKEN);
 
         const user = await User.findOne({
             _id: decoded._id,
