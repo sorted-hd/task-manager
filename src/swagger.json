@@ -5,7 +5,7 @@
         "version": "1.0.0",
         "description": "An Express Task Manager API"
     },
-    "host": "https://qkart-backend-hd.herokuapp.com/",
+    "host": "https://task-app-hd.herokuapp.com/api-docs/",
     "basePath": "/",
     "tags": [
         {
