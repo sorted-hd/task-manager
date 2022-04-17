@@ -1,0 +1,196 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Task Manager API",
+        "version": "1.0.0",
+        "description": "An Express Task Manager API"
+    },
+    "host": "https://qkart-backend-hd.herokuapp.com/",
+    "basePath": "/",
+    "tags": [
+        {
+            "name": "User",
+            "description": "API for user"
+        }
+    ],
+    "schemes": ["https"],
+    "consumes": ["application/json"],
+    "produces": ["application/json"],
+    "paths": {
+        "/users": {
+            "post": {
+                "tags": ["User"],
+                "description": "Create new user in system",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "User that we want to create",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                },
+                                "age": {
+                                    "type": "number"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "produces": ["application/json"],
+                "responses": {
+                    "200": {
+                        "description": "New user is created",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "user": {
+                                    "type": "object",
+                                    "properties": {
+                                        "_id": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "age": {
+                                            "type": "number"
+                                        },
+                                        "createdAt": {
+                                            "type": "string"
+                                        },
+                                        "updatedAt": {
+                                            "type": "string"
+                                        },
+                                        "__v": {
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                "token": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/login": {
+            "post": {
+                "tags": ["User"],
+                "description": "Login a user",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "description": "Add token in header with Bearer keyword",
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer jwtToken"
+                        }
+                    },
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "User thats wants to login",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        "/users/logout": {
+            "post": {
+                "tags": ["User"],
+                "description": "Logout a user",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "description": "Add token in header with Bearer keyword",
+                        "schema": {
+                            "type": "string",
+                            "example": "Bearer jwtToken"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "definitions": {
+        "Task": {
+            "required": ["description", "_id", "owner"],
+            "properties": {
+                "_id": {
+                    "type": "mongoose.Schema.Types.ObjectId",
+                    "uniqueItems": true
+                },
+                "description": {
+                    "type": "string"
+                },
+                "completed": {
+                    "type": "boolean"
+                },
+                "owner": {
+                    "type": "mongoose.Schema.Types.ObjectId",
+                    "$ref": "#/definitions/User"
+                }
+            }
+        },
+        "User": {
+            "required": ["name", "email", "password", "_id"],
+            "properties": {
+                "_id": {
+                    "type": "mongoose.Schema.Types.ObjectId"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "age": {
+                    "type": "number"
+                },
+                "tokens": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "token": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                },
+                "avatar": {
+                    "type": "buffer"
+                }
+            }
+        }
+    }
+}
